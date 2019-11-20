@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DOCKER_SOCKET=/var/run/docker.sock
+DOCKER_GROUP=docker
+
+
+if [ -S ${DOCKER_SOCKET} ]; then
+    DOCKER_GID=$(stat -c '%g' ${DOCKER_SOCKET})
+    sed -i 's/'"$DOCKER_GROUP"':x:[0-9]\+:/'"$DOCKER_GROUP"':x:'"$DOCKER_GID"':/g' /etc/group
+fi
+
+exec setup-sshd "${@}"
